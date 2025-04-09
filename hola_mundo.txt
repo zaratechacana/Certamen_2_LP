@@ -1,0 +1,184 @@
+package main
+
+import "fmt"
+
+// Función para sumar dos números enteros
+func sumar(a int, b int) int {
+	return a + b
+}
+
+// Función principal del programa
+func main() {
+	// Imprimir un mensaje de bienvenida
+	fmt.Println("Bienvenido a Go!")
+
+	// --- Variables y Tipos de Datos ---
+
+	// Declarar e inicializar variables
+	var numero int = 10
+	var texto string = "Hola Mundo"
+	var flotante float64 = 3.14
+	var booleano bool = true
+
+	// Imprimir variables
+	fmt.Println("Número:", numero)
+	fmt.Println("Texto:", texto)
+	fmt.Println("Flotante:", flotante)
+	fmt.Println("Booleano:", booleano)
+
+	// --- Funciones ---
+
+	// Llamar a una función y almacenar el resultado
+	resultado := sumar(5, 3)
+	fmt.Println("El resultado de la suma es:", resultado)
+
+	// --- Condicionales ---
+
+	// Usar una estructura if-else para evaluar condiciones
+	if numero > 5 {
+		fmt.Println("El número es mayor a 5")
+	} else if numero == 5 {
+		fmt.Println("El número es igual a 5")
+	} else {
+		fmt.Println("El número es menor a 5")
+	}
+
+	// --- Listas (Slices) ---
+
+	// Crear y manipular un slice (lista dinámica)
+	lista := []int{10, 20, 30, 40, 50}
+	lista = append(lista, 60) // Añadir un elemento al slice
+
+	// Iterar sobre un slice
+	for i, valor := range lista {
+		fmt.Println("Índice:", i, "Valor:", valor)
+	}
+
+	// --- Mapas (Diccionarios) ---
+
+	// Crear y manipular un mapa (diccionario)
+	diccionario := make(map[string]int)
+	diccionario["uno"] = 1
+	diccionario["dos"] = 2
+	diccionario["tres"] = 3
+
+	// Acceder y modificar elementos en un mapa
+	fmt.Println("El número tres:", diccionario["tres"])
+	delete(diccionario, "dos") // Eliminar un elemento del mapa
+	fmt.Println("Mapa después de eliminar 'dos':", diccionario)
+}
+
+
+
+
+
+
+
+
+
+
+**********************************************************
+
+package main
+
+import (
+	"container/list"
+	"fmt"
+	"strings"
+)
+
+// Estado representa los posibles estados de un proceso.
+type Estado int
+
+// Enumeración de los estados posibles de un proceso.
+const (
+	Nuevo Estado = iota
+	Listo
+	Ejecutando
+	Bloqueado
+	Saliente
+)
+
+// Proceso define la estructura de un proceso en el sistema.
+type Proceso struct {
+	ID            int      // Identificador del proceso.
+	Estado        Estado   // Estado actual del proceso.
+	ContadorPC    int      // Contador del Programa (Program Counter).
+	EstadoES      string   // Información del estado de E/S.
+	Instrucciones []string // Lista de instrucciones del proceso.
+}
+
+// Dispatcher maneja las colas de procesos y la asignación de la CPU.
+type Dispatcher struct {
+	Listos     *list.List // Cola para procesos en estado Listo.
+	Bloqueados *list.List // Cola para procesos en estado Bloqueado.
+}
+
+// NuevoDispatcher crea y retorna una nueva instancia de Dispatcher.
+func NuevoDispatcher() *Dispatcher {
+	return &Dispatcher{
+		Listos:     list.New(),
+		Bloqueados: list.New(),
+	}
+}
+
+// GuardarEstado simula guardar el estado actual del proceso.
+func (d *Dispatcher) GuardarEstado(proceso *Proceso) {
+	fmt.Printf("Guardando estado del proceso %d\n", proceso.ID)
+}
+
+// PonerEnCola pone un proceso en la cola correspondiente según su estado.
+func (d *Dispatcher) PonerEnCola(proceso *Proceso) {
+	switch proceso.Estado {
+	case Listo:
+		d.Listos.PushBack(proceso)
+	case Bloqueado:
+		d.Bloqueados.PushBack(proceso)
+	}
+	fmt.Printf("Proceso %d puesto en cola %v\n", proceso.ID, proceso.Estado)
+}
+
+// SacarDeColaListos saca el siguiente proceso de la cola de listos.
+func (d *Dispatcher) SacarDeColaListos() *Proceso {
+	if d.Listos.Len() == 0 {
+		return nil
+	}
+	e := d.Listos.Front()
+	d.Listos.Remove(e)
+	proceso := e.Value.(*Proceso)
+	return proceso
+}
+
+// SacarDeColaBloqueados simula sacar un proceso de la cola de bloqueados.
+func (d *Dispatcher) SacarDeColaBloqueados() *Proceso {
+	if d.Bloqueados.Len() == 0 {
+		return nil
+	}
+	e := d.Bloqueados.Front()
+	d.Bloqueados.Remove(e)
+	proceso := e.Value.(*Proceso)
+	return proceso
+}
+
+// CargarProceso simula cargar un proceso en la CPU.
+func (d *Dispatcher) CargarProceso(proceso *Proceso) {
+	fmt.Printf("Cargando proceso %d en la CPU\n", proceso.ID)
+	proceso.Estado = Ejecutando
+}
+
+// EjecutarProceso simula la ejecución de un proceso.
+func (d *Dispatcher) EjecutarProceso(proceso *Proceso, m int) {
+	fmt.Printf("Ejecutando proceso %d\n", proceso.ID)
+	for i := 0; i < m && proceso.Estado == Ejecutando; i++ {
+		if proceso.ContadorPC >= len(proceso.Instrucciones) {
+			proceso.Estado = Saliente
+			break
+		}
+
+		instruccion := proceso.Instrucciones[proceso.ContadorPC]
+		proceso.ContadorPC++
+		SimularInstruccion
+
+
+
+		
